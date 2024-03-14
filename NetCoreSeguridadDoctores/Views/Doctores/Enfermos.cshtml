@@ -28,11 +28,20 @@
             <td>@item.Sexo</td>
             <td>@item.SeguridadSocial</td>
             <td>
+                    @if (Context.User.Identity.IsAuthenticated == true)
+                    {
+                        <a asp-controller="Doctores"
+                           asp-action="DeleteEnfermo"
+                           asp-route-id="@item.Inscripcion"
+                           class="btn btn-warning">
+                            Delete Oculto
+                        </a>
+                    }
                 <a asp-controller="Doctores"
                     asp-action="DeleteEnfermo"
                     asp-route-id="@item.Inscripcion"
                     class="btn btn-danger">
-                    Delete
+                    Delete con seguridad
                 </a>
                 <a asp-controller="Doctores"
                        asp-action="Delete"

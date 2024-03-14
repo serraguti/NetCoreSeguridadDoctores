@@ -57,7 +57,6 @@ namespace NetCoreSeguridadDoctores.Controllers
             return RedirectToAction("Enfermos");
         }
 
-        //[AuthorizeDoctores]
         [HttpPost]
         [ActionName("Delete")]
         public async Task<IActionResult> DeleteSick(int id)
