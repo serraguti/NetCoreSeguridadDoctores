@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using NetCoreSeguridadDoctores.Data;
+using NetCoreSeguridadDoctores.Policies;
 using NetCoreSeguridadDoctores.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,12 +15,29 @@ builder.Services.AddTransient<RepositoryHospital>();
 builder.Services.AddDbContext<HospitalContext>
     (options => options.UseSqlServer(connectionString));
 
+//INCLUIMOS LA POLITICA PARA EL ACCESO A DETERMINADOS ROLES
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("PERMISOSELEVADOS",
+        policy => policy.RequireRole("Psiquiatría", "Cardiología"));
+    options.AddPolicy("AdminOnly",
+        policy => policy.RequireClaim("Administrador"));
+    options.AddPolicy("SoloRicos",
+        policy => policy.Requirements.Add(new OverSalarioRequirement()));
+});
+
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-}).AddCookie();
+}).AddCookie(
+    CookieAuthenticationDefaults.AuthenticationScheme,
+    config =>
+    {
+        config.AccessDeniedPath = "/Managed/ErrorAcceso";
+    });
 
 builder.Services.AddControllersWithViews(options =>
 options.EnableEndpointRouting = false)

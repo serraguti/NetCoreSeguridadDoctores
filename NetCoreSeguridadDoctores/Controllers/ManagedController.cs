@@ -46,6 +46,16 @@ namespace NetCoreSeguridadDoctores.Controllers
                 identity.AddClaim
                     (new Claim(ClaimTypes.Role, 
                     doctor.Especialidad));
+                identity.AddClaim(new Claim
+                    ("SALARIO", doctor.Salario.ToString()));
+                //INCLUIMOS UN CLAIM INVENTADO QUE SOLAMENTE TENDRA UN 
+                //DOCTOR
+                if (doctor.IdDoctor == 111)
+                {
+                    //CREAMOS SU PROPIO Y UNICO CLAIM
+                    identity.AddClaim
+                        (new Claim("Administrador", "Soy el admin"));
+                }
                 ClaimsPrincipal user = new ClaimsPrincipal(identity);
                 await HttpContext.SignInAsync
                     (CookieAuthenticationDefaults.AuthenticationScheme

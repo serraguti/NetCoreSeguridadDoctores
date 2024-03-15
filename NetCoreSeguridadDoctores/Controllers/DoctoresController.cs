@@ -26,6 +26,7 @@ namespace NetCoreSeguridadDoctores.Controllers
             return View(doctor);
         }
 
+        [AuthorizeDoctores(Policy = "PERMISOSELEVADOS")]
         public async Task<IActionResult> Enfermos()
         {
             List<Enfermo> enfermos =
@@ -63,6 +64,18 @@ namespace NetCoreSeguridadDoctores.Controllers
         {
             await this.repo.DeleteEnfermoAsync(id);
             return RedirectToAction("Enfermos");
+        }
+
+        [AuthorizeDoctores(Policy = "AdminOnly")]
+        public IActionResult AdminDoctores()
+        {
+            return View();
+        }
+
+        [AuthorizeDoctores(Policy = "SoloRicos")]
+        public IActionResult DoctoresRicos()
+        {
+            return View();
         }
     }
 }
